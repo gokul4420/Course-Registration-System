@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Student Enrollment</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('update studentdetails.jpg') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 32px;
+      margin-bottom: 20px;
+      z-index: 1;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+      width: 90%;
+      max-width: 420px;
+      z-index: 1;
+    }
+
+    label {
+      font-weight: 600;
+      color: #ffffff;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 15px;
+    }
+
+    input::placeholder {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #00bcd4;
+      box-shadow: 0 0 6px rgba(0, 188, 212, 0.6);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      background-color: #00bcd4;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    .btn:hover {
+      background-color: #0097a7;
+      transform: translateY(-2px);
+    }
+
+    .back-button {
+      background-color: #00bcd4;
+      color: white;
+      padding: 12px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .back-button:hover {
+      background-color: #0097a7;
+    }
+
+    #response {
+      margin-top: 10px;
+      color: white;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      form {
+        padding: 25px 20px;
+      }
+
+      input, select {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Update Student Enrollment</h1>
+
+  <form id="updateStudentForm">
+    <label for="id">Student ID:</label>
+    <input type="number" id="id" name="id" placeholder="Enter Student ID" required />
+
+    <button type="button" class="btn" onclick="fetchStudentDetails()">
+      <i class="fas fa-search"></i> Fetch Details
+    </button>
+
+    <label for="name">Student Name:</label>
+    <input type="text" id="name" name="name" placeholder="Student Name" required />
+
+    <label for="emailId">Email ID:</label>
+    <input type="text" id="emailId" name="emailId" placeholder="student@example.com" required />
+
+    <label for="courseName">Course Name:</label>
+    <select id="courseName" name="courseName" required>
+      <!-- Options will be dynamically populated here -->
+    </select>
+
+    <label for="feeStatus">Course Fee Status:</label>
+    <select id="feeStatus" name="feeStatus" required>
+      <option value="">-- Select Status --</option>
+      <option value="Paid">Paid</option>
+      <option value="Unpaid">Unpaid</option>
+    </select>
+
+    <button type="submit" class="btn">
+      <i class="fas fa-upload"></i> Update Student
+    </button>
+
+    <button type="button" class="btn" onclick="deleteStudent()">
+      <i class="fas fa-trash-alt"></i> Delete Student
+    </button>
+
+    <button type="button" class="back-button" onclick="window.location.href='index.html'">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </button>
+
+    <div id="response"></div>
+  </form>
+
+  <script>
+    // Fetch available courses to populate the Course Name dropdown
+    function fetchCourses() {
+      const courseNameSelect = document.getElementById("courseName");
+
+      fetch("http://localhost:8080/courses/all")
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(courses => {
+          console.log(courses);  // Check the output in the browser console
+
+          if (courses && Array.isArray(courses)) {
+            courseNameSelect.innerHTML = '<option value="">-- Select a Course --</option>';
+
+            courses.forEach(course => {
+              const option = document.createElement("option");
+              option.value = course.courseName;  // Use courseName from the response
+              option.textContent = course.courseName;  // Display courseName in the dropdown
+              courseNameSelect.appendChild(option);
+            });
+          } else {
+            console.error('Invalid courses data:', courses);
+            document.getElementById("response").textContent = "Error: Invalid course data.";
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching courses:", error);
+          document.getElementById("response").textContent = "Error fetching courses.";
+        });
+    }
+
+    // Fetch student details by ID and populate the form
+    function fetchStudentDetails() {
+      const id = document.getElementById("id").value;
+      const res = document.getElementById("response");
+
+      if (!id) {
+        res.textContent = "Please enter a Student ID.";
+        return;
+      }
+
+      fetch(`http://localhost:8080/courseRegistry/${id}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Student not found.");
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.id) {
+            document.getElementById("name").value = data.name;
+            document.getElementById("emailId").value = data.emailId;
+            document.getElementById("courseName").value = data.courseName;
+            document.getElementById("feeStatus").value = data.amountpaid ? "Paid" : "Unpaid";
+            res.textContent = "Student details loaded.";
+          } else {
+            res.textContent = "Student not found.";
+          }
+        })
+        .catch(error => {
+          res.textContent = error.message || "Error fetching student details.";
+        });
+    }
+
+    document.getElementById("updateStudentForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const id = document.getElementById("id").value;
+  const name = document.getElementById("name").value;
+  const emailId = document.getElementById("emailId").value;
+  const courseName = document.getElementById("courseName").value;
+  const feeStatus = document.getElementById("feeStatus").value; // This gets the selected fee status
+
+  // Set amountpaid based on fee status selection
+  let amountpaid = feeStatus === "Paid"; // If "Paid" is selected, it will be true; if "Unpaid", false
+
+  // Send PUT request to update student
+  fetch(`http://localhost:8080/courses/updatedstudents/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      emailId,
+      courseName,
+      amountpaid  // Send boolean value to backend
+    })
+  })
+  .then(response => response.text()) // Get response as plain text
+  .then(data => {
+    // Since the response is plain text, we can directly display it
+    document.getElementById("response").textContent = data || "Student updated successfully.";
+  })
+  .catch(error => {
+    // Handle any errors that occur during the fetch request or response processing
+    document.getElementById("response").textContent = error.message || "Error updating student.";
+    console.error("Error:", error);
+  });
+});
+
+
+
+function deleteStudent() {
+  const id = document.getElementById("id").value;
+  const res = document.getElementById("response");
+
+  if (!id) {
+    res.textContent = "Please enter a Student ID.";
+    return;
+  }
+
+  fetch(`http://localhost:8080/course/delete/${id}`, {
+    method: "DELETE",
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to delete student");
+      }
+      return response.text(); // <-- Expecting plain text from backend
+    })
+    .then(message => {
+      res.textContent = message;
+    })
+    .catch(error => {
+      res.textContent = "Error deleting student.";
+      console.error("Error:", error);
+    });
+}
+
+
+    // Fetch courses when the page loads
+    fetchCourses();
+  </script>
+</body>
+</html>

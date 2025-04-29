@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('backgroundlogin1.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .signup-container {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 50px 40px;
+      width: 360px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .signup-container:hover {
+      transform: scale(1.015);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 15px;
+      color: #2c3e50;
+      transition: 0.3s ease;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+      background-color: #fff;
+    }
+
+    input::placeholder {
+      color: #888;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-button {
+      background: rgba(244, 246, 247, 0.2);
+      color: #100d0d;
+      font-weight: normal;
+    }
+
+    .back-button:hover {
+      background: rgb(0, 0, 0);
+      color: #f0e9e9;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #ff4d4d;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h2>Sign Up</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <select id="role" required>
+      <option value="">Select Role</option>
+      <option value="admin">Admin</option>
+      <option value="student">Student</option>
+    </select>
+    <button onclick="signup()">Sign Up</button>
+    <button class="back-button" onclick="goToLogin()">Back to Login</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    function signup() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const role = document.getElementById('role').value;
+      const messageDiv = document.getElementById('message');
+
+      if (!username || !password || !role) {
+        messageDiv.style.color = "red";
+        messageDiv.textContent = 'Please fill in all fields.';
+        return;
+      }
+
+      const user = {
+        username,
+        password,
+        role
+      };
+
+      fetch("http://localhost:8080/Signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+      })
+      .then(response => response.text())
+      .then(data => {
+        messageDiv.style.color = "lightgreen";
+        messageDiv.textContent = "Signup successful!";
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        messageDiv.style.color = "red";
+        messageDiv.textContent = "Error during signup. Try again.";
+      });
+    }
+
+    function goToLogin() {
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>

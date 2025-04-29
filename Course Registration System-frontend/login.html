@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Course Registration - Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('login3.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-container {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      padding: 50px 40px;
+      width: 360px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      color: #2c3e50;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-container:hover {
+      transform: scale(1.015);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      font-size: 15px;
+      color: #2c3e50;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(100, 200, 255, 0.6);
+      background-color: #ffffff;
+    }
+
+    input::placeholder {
+      color: #888;
+    }
+
+    .role-group {
+      display: flex;
+      justify-content: space-around;
+      margin: 15px 0 20px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .role-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #fdd835, #ffeb3b);
+      color: #333;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #fff176, #fff59d);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .signup-button {
+      background: #fff;
+      color: #2c3e50;
+      font-weight: normal;
+      margin-top: 12px;
+    }
+
+    .signup-button:hover {
+      background: #f0f0f0;
+      color: #000;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      color: #d32f2f;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+
+    <div class="role-group">
+      <label><input type="radio" name="role" value="admin" required> Admin</label>
+      <label><input type="radio" name="role" value="student"> Student</label>
+    </div>
+
+    <button onclick="login()">Login</button>
+    <button class="signup-button" onclick="goToSignup()">Sign Up</button>
+
+    <div id="message"></div>
+  </div>
+
+  <script>
+    function login() {
+      const roleInputs = document.getElementsByName("role");
+      let selectedRole = null;
+      for (const input of roleInputs) {
+        if (input.checked) {
+          selectedRole = input.value;
+          break;
+        }
+      }
+
+      const user = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        role: selectedRole
+      };
+
+      fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+      })
+      .then(res => res.text())
+      .then(response => {
+        if (response === "true") {
+          if (user.role.toLowerCase() === "admin") {
+            window.location.href = "index.html";
+          } else {
+            window.location.href = "StudentDasboard.html";
+          }
+        } else {
+          document.getElementById("message").textContent = "Invalid login credentials.";
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        document.getElementById("message").textContent = "Something went wrong!";
+      });
+    }
+
+    function goToSignup() {
+      window.location.href = "signup.html";
+    }
+  </script>
+
+</body>
+</html>

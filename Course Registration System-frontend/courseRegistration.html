@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Registration</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('courseregister1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+
+        h1 {
+            color: #ffffff;
+            font-size: 32px;
+            margin-bottom: 30px;
+            z-index: 1;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 35px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 420px;
+            z-index: 1;
+        }
+
+        label {
+            font-weight: 600;
+            color: #ffffff;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.85);
+            color: #000;
+            font-size: 15px;
+        }
+
+        input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        input:focus {
+            border-color: #00bcd4;
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 6px rgba(0, 188, 212, 0.6);
+        }
+
+        button[type="submit"] {
+            background-color: #00bcd4;
+            color: white;
+            border: none;
+            padding: 14px 0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #00bcd4;
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            margin-top: 20px;
+            background-color: #00bcd4;
+            color: white;
+            padding: 12px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1;
+        }
+
+        .back-button:hover {
+            background-color: #0097a7;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            form {
+                padding: 25px 20px;
+            }
+
+            input {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Add new Course</h1>
+
+    <form action="http://localhost:8080/courses/Registration" method="post">
+        <label for="courseId">Enter your Course ID:</label>
+        <input type="text" id="courseId" name="courseId" placeholder="Enter course ID" required>
+
+        <label for="courseName">Enter Course Name:</label>
+        <input type="text" id="courseName" name="courseName" placeholder="Enter course name" required>
+
+        <label for="trainer">Enter your Trainer Name:</label>
+        <input type="text" id="trainer" name="trainer" placeholder="Enter trainer name" required>
+
+        <label for="durationInWeeks">Enter Duration (in weeks):</label>
+        <input type="text" id="durationInWeeks" name="durationInWeeks" placeholder="Enter weeks" required>
+
+        <label for="coursefee">Enter Course Fee(INR):</label>
+        <input type="text" id="coursefee" name="coursefee" placeholder="Enter course fee" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <button class="back-button" onclick="window.location.href='index.html'">Back to Home</button>
+</body>
+</html>
